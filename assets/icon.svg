@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4141a2"/><stop offset="1" stop-color="#171d44"/></linearGradient>
+    <radialGradient id="ivory" cx=".35" cy=".25" r=".8"><stop stop-color="#ffffff"/><stop offset=".75" stop-color="#eee9e2"/><stop offset="1" stop-color="#c7c5d7"/></radialGradient>
+    <radialGradient id="coral" cx=".35" cy=".25" r=".8"><stop stop-color="#ffbb94"/><stop offset=".6" stop-color="#ff785f"/><stop offset="1" stop-color="#d64761"/></radialGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="18" stdDeviation="15" flood-color="#090d28" flood-opacity=".5"/></filter>
+  </defs>
+  <rect x="52" y="52" width="920" height="920" rx="212" fill="url(#background)"/>
+  <rect x="54" y="54" width="916" height="916" rx="210" fill="none" stroke="#ffffff" stroke-opacity=".15" stroke-width="4"/>
+  <g stroke="#b5b2ff" stroke-opacity=".34" stroke-width="8" stroke-linecap="round">
+    <path d="M256 256H768 M256 384H768 M256 512H768 M256 640H768 M256 768H768"/>
+    <path d="M256 256V768 M384 256V768 M512 256V768 M640 256V768 M768 256V768"/>
+  </g>
+  <g fill="#c5c2ff"><circle cx="256" cy="256" r="10"/><circle cx="768" cy="768" r="10"/><circle cx="512" cy="512" r="11"/></g>
+  <circle cx="640" cy="384" r="143" fill="url(#coral)" filter="url(#shadow)"/>
+  <circle cx="384" cy="640" r="143" fill="url(#ivory)" filter="url(#shadow)"/>
+  <circle cx="640" cy="384" r="142" fill="none" stroke="#ffd5bd" stroke-opacity=".35" stroke-width="3"/>
+  <circle cx="384" cy="640" r="142" fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="3"/>
+</svg>

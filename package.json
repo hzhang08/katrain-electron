@@ -1,0 +1,21 @@
+{
+  "name": "katrain-electron",
+  "productName": "KaTrain Electron",
+  "version": "1.0.0",
+  "description": "Original KaTrain desktop experience hosted in Electron",
+  "license": "MIT",
+  "private": true,
+  "main": "app/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "npm run smoke",
+    "build:backend": "uv run python scripts/build_backend.py",
+    "package": "node scripts/package.cjs",
+    "smoke": "electron . --smoke",
+    "test:session": "node scripts/test-session.cjs"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "@electron/packager": "20.3.0"
+  }
+}

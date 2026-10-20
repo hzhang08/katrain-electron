@@ -1,0 +1,11 @@
+node_modules/
+.venv/
+build/
+release/
+test-output/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+.env
+*.log

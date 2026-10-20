@@ -1,0 +1,24 @@
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { RecentGames } = require('../app/recent-games.cjs');
+test('recent games retain ordering, deduplicate, cap, persist, remove and clear', t => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'recent-games-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const file = path.join(dir, 'recent.json');
+  const history = new RecentGames(file, 2);
+  const a = path.join(dir, 'a.sgf'), b = path.join(dir, 'b.ngf'), c = path.join(dir, 'c.gib');
+  history.add(a); history.add(b); history.add(a);
+  assert.deepEqual(new RecentGames(file).paths, [a, b]);
+  history.add(c); assert.deepEqual(history.paths, [c, a]);
+  assert.equal(history.add(c), false);
+  assert.equal(history.add('relative.sgf'), false);
+  assert.equal(history.add(path.join(dir, 'x.txt')), false);
+  history.remove(c); assert.deepEqual(new RecentGames(file).paths, [a]);
+  history.clear(); assert.deepEqual(new RecentGames(file).paths, []);
+  fs.writeFileSync(file, '{invalid'); assert.deepEqual(new RecentGames(file).paths, []);
+  fs.writeFileSync(file, JSON.stringify([a, a, 42, '../bad.sgf', b]));
+  assert.deepEqual(new RecentGames(file).paths, [a, b]);
+});
