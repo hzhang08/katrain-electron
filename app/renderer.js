@@ -3,6 +3,15 @@ const canvas = document.querySelector("#board"),
 const status = document.querySelector("#status"),
   message = document.querySelector("#message"),
   ime = document.querySelector("#ime");
+const moveForm = document.querySelector("#move-navigation");
+const moveNumber = document.querySelector("#move-number");
+const moveFeedback = document.querySelector("#move-feedback");
+moveForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const move = Number(moveNumber.value);
+  if (!Number.isSafeInteger(move) || move < 0 || !moveNumber.value.trim()) return;
+  window.katrain.input({ type: "jump-move", move });
+});
 let composing = false,
   lastDown = { time: 0, x: 0, y: 0 };
 window.katrain.onHost(async (event) => {
@@ -23,6 +32,13 @@ window.katrain.onHost(async (event) => {
   } else if (event.type === "ready") {
     resize();
     ime.focus();
+  } else if (event.type === "move-jumped") {
+    moveFeedback.classList.remove("error");
+    moveFeedback.textContent = `Move ${event.move}`;
+    ime.focus();
+  } else if (event.type === "move-jump-error") {
+    moveFeedback.classList.add("error");
+    moveFeedback.textContent = event.message;
   } else if (event.type === "fatal") {
     status.hidden = false;
     message.textContent = event.message;
@@ -96,7 +112,7 @@ const keys = {
 };
 for (const type of ["keydown", "keyup"])
   document.addEventListener(type, (e) => {
-    if (composing || e.isComposing) return;
+    if (moveForm.contains(e.target) || composing || e.isComposing) return;
     const key = keys[e.key] || e.key.toLowerCase();
     window.katrain.input({
       type,
@@ -119,8 +135,8 @@ window.addEventListener("focus", () => ime.focus());
 function resize() {
   window.katrain.input({
     type: "resize",
-    width: innerWidth,
-    height: innerHeight,
+    width: Math.round(canvas.getBoundingClientRect().width),
+    height: Math.round(canvas.getBoundingClientRect().height),
   });
 }
 let resizeTimer;

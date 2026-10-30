@@ -153,6 +153,7 @@ class ElectronKaTrain(KaTrainApp):
             super().on_start()
         finally:
             self.gui._do_new_game = new_game
+        self.gui._do_electron_jump = self.jump_to_move
         self.gui._do_electron_close = lambda: Clock.schedule_once(self.finish_close, 0)
         if self.startup_warning:
             Clock.schedule_once(lambda _dt: send("session-warning", message=self.startup_warning), 1)
@@ -175,6 +176,21 @@ class ElectronKaTrain(KaTrainApp):
             self.last_recent_game = current
             if filename:
                 send("game-opened", path=os.path.abspath(filename))
+
+    def jump_to_move(self, number):
+        from navigation import node_at_move
+
+        try:
+            if not self.gui.game or self.gui.popup_open or self.gui.contributing:
+                raise ValueError("Close any dialog and open a game before navigating.")
+            if self.gui.game.insert_mode:
+                raise ValueError("Finish inserting moves before navigating.")
+            node = node_at_move(self.gui.game.current_node, number)
+            self.gui.board_gui.animating_pv = None
+            self.gui.game.set_current_node(node)
+            send("move-jumped", move=node.depth)
+        except ValueError as error:
+            send("move-jump-error", message=str(error))
 
     def session_view(self):
         gui = self.gui
@@ -332,6 +348,8 @@ class ElectronKaTrain(KaTrainApp):
             Clipboard.copy(event["text"])
         elif kind == "open":
             self.gui.load_sgf_file(event["path"], fast=True, rewind=True)
+        elif kind == "jump-move":
+            self.gui("electron-jump", event.get("move"))
         elif kind == "action":
             allowed = {
                 "new-game-popup",

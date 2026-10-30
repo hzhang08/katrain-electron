@@ -7,6 +7,7 @@ An Electron desktop shell for the original single-board [KaTrain](https://github
 These additions are implemented by this wrapper around upstream commit `f4981cf905cece90085ce4e3967415d0c16d525f`; this comparison does not claim that every newer upstream release lacks them.
 
 - **Resume without re-analyzing:** saves the whole game tree and complete/partial KataGo analysis every 15 seconds and on normal close. Restores the selected position, variations, notes, and relevant view state. Reopens paused in Analysis mode without automatically re-requesting cached analysis.
+- **Go to move:** enter a move number in the box below the board and press Enter or Go. Move 0 returns to the starting position. Navigation follows the current variation and its preferred continuation; unavailable moves show an error.
 - **Open Recent:** File → Open Recent remembers the latest 12 successfully viewed files across launches. Reopening moves an entry to the top without duplicates. Clear Recent Games clears only the list; missing files produce a warning.
 - **Electron desktop integration:** native menus, open/save shortcuts, Finder file associations, drag-and-drop, single-instance handling, and persistent window bounds.
 - **Separate app identity:** a custom indigo Go-grid icon and isolated settings/session data, allowing the app to coexist with traditional KaTrain.

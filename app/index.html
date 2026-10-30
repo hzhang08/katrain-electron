@@ -16,6 +16,12 @@
       aria-label="KaTrain game and analysis interface"
       tabindex="0"
     ></canvas>
+    <form id="move-navigation" aria-label="Go to move">
+      <label for="move-number">Go to move</label>
+      <input id="move-number" type="number" min="0" step="1" placeholder="86" required aria-describedby="move-feedback" />
+      <button type="submit">Go</button>
+      <span id="move-feedback" role="status" aria-live="polite"></span>
+    </form>
     <textarea
       id="ime"
       aria-label="KaTrain text input"

@@ -343,6 +343,7 @@ else {
         return;
       if (
         [
+          "jump-move",
           "ack",
           "resize",
           "down",
@@ -434,7 +435,7 @@ async function runSmoke() {
   const [x, y] = state.board[3 * 19 + 3];
   // Real Electron mouse events, through the canvas and bridge, to Kivy.
   const dimensions = await window.webContents.executeJavaScript(
-    "({width:innerWidth,height:innerHeight})",
+    "({width:document.querySelector('#board').clientWidth,height:document.querySelector('#board').clientHeight})",
   );
   const point = {
     x: Math.round((x / state.size[0]) * dimensions.width),
@@ -493,6 +494,20 @@ async function runSmoke() {
   assert.ok(recentMenu.submenu.items[0].label.includes("smoke.sgf"));
   recentMenu.submenu.items[0].click();
   await until(async () => (await inspect()).depth === 0);
+  action("redo", [9999]);
+  await until(async () => (await inspect()).depth === 2);
+  // Submit the visible move box, then verify the bridge changed the board.
+  await window.webContents.executeJavaScript(`
+    document.querySelector('#move-number').value = '1';
+    document.querySelector('#move-navigation').requestSubmit();
+  `);
+  await until(async () => (await inspect()).depth === 1);
+  await window.webContents.executeJavaScript(`
+    document.querySelector('#move-number').value = '86';
+    document.querySelector('#move-navigation').requestSubmit();
+  `);
+  await until(() => window.webContents.executeJavaScript("document.querySelector('#move-feedback').classList.contains('error')"));
+  assert.equal((await inspect()).depth, 1);
   action("redo", [9999]);
   await until(async () => (await inspect()).depth === 2);
   assert.equal(recentGames.paths.filter(file => file === sgf).length, 1);
@@ -560,12 +575,12 @@ async function runSmoke() {
     const current = await inspect();
     return (
       current.logicalSize[0] === 1100 &&
-      current.logicalSize[1] === 800 &&
+      current.logicalSize[1] === 756 &&
       current
     );
   });
   assert.equal(state.logicalSize[0], 1100);
-  assert.equal(state.logicalSize[1], 800);
+  assert.equal(state.logicalSize[1], 756);
   fs.writeFileSync(
     path.join(output, "loaded.png"),
     (await window.webContents.capturePage()).toPNG(),
